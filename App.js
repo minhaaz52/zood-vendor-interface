@@ -5,6 +5,7 @@ import AppLoading from 'expo-app-loading'
 import { Provider } from 'react-redux';
 import { store } from './src/store/store';
 import * as Font from 'expo-font'
+
 const fetchFonts=()=>{
   return Font.loadAsync({
     'nunito':require('./src/assets/fonts/Nunito-Regular.ttf'),

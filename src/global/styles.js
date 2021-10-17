@@ -5,10 +5,17 @@ export const colors={
     grey3:"#86939e",
     grey4:"#bdc6cf",
     grey5:"#e1e8ee",
+    grey6:"rgb(240, 234, 234)",
     CardComment:"#86939e",
     cardbackground:"white",
     statusBar:"#ff8c52",
-    headerText:'white'
+    headerText:'white',
+    gray:"gray",
+    green:"green",
+    black:"black",
+    red:"red",
+    star:"#FF8C00",
+    black2:"rgb(89, 89, 89)",
 }
 
 
