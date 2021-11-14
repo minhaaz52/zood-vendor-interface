@@ -14,36 +14,23 @@ dispatch=useDispatch()
     const [price,setPrice]=useState()
     const [description,setDescription]=useState('')
 
+    const data = [ { label: 'Veg' }, { label: 'Non-Veg' } ];
 
-    const data = [
-        {
-          label: 'Veg'
-         },
-         {
-          label: 'Non-Veg'
-         }
-        ];
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
+    
     const [items, setItems] = useState([
-      {label: 'Starters', value: 'starters'},
-      {label: 'Desserts', value: 'desserts'},
-      {label: 'Main Course', value: 'main course'},
+      {label: 'Starter', value: 'Starter'},
+      {label: 'Dessert', value: 'Dessert'},
+      {label: 'Main Course', value: 'MainCourse'},
     ]);
 
 
 
     const submitHandler=()=>{
-        const newItem={
-            name,
-            type,
-            price,
-            category:value,
-            description,
-            rating:0,
-            numberOfRatings:0
-        }
-         dispatch(dataActions.addData(newItem))
+        const newItem={ name, type, price, category:value, description, rating:0, numberOfRatings:0, disable:false }
+
+        dispatch(dataActions.addData(newItem))
         Alert.alert('Item Added Successfully')
         setName('')
         setPrice()
@@ -51,77 +38,80 @@ dispatch=useDispatch()
         setType()
         setDescription('')
     }
-
+ 
     return(
-<View style={styles.container}>
-<TextInput
-                    placeholder='Name'
-                    style={styles.textInput1}
-                    value={name}
-                    onChangeText={(e)=>{
-                        setName(e)
-                    }}
-                    onFocus={()=>{
-                    }}
-                    onBlur={()=>{
-                    }}
-                     />
-                     <RadioButtonRN
-                     style={{paddingHorizontal:20,alignItems:'flex-start',flexDirection:'column'}}
-                     data={data}
-                     box={false}
-                     selectedBtn={(e) => {
-                         setType(e.label) 
-                         }}
-                      />
+        <View style={styles.container}>
+            <TextInput
+                placeholder='Name'
+                style={styles.textInput1}
+                value={name}
+                onChangeText={(e)=>{
+                    setName(e)
+                }}
+                onFocus={()=>{
+                }}
+                onBlur={()=>{
+                }}
+            />
+            
+            <RadioButtonRN
+                style={{paddingHorizontal:20,alignItems:'flex-start',flexDirection:'column'}}
+                data={data}
+                box={false}
 
-<TextInput
-                    placeholder='Price'
-                    style={styles.textInput1}
-                    value={price}
-                    onChangeText={(e)=>{
-                        setPrice(e)
-                    }}
-                    keyboardType='number-pad'
-                    onFocus={()=>{
-                    }}
-                    onBlur={()=>{
-                    }}
-                     />
-                         <DropDownPicker
-      open={open}
-      value={value}
-      items={items}
-      setOpen={setOpen}
-      setValue={setValue}
-      setItems={setItems}
+                selectedBtn={(e) => {
+                    setType(e.label)
+                }}
+            />
 
-    />
-<TextInput
-                    placeholder='Description(optional)'
-                    style={styles.textInput1}
-                    value={description}
-                    onChangeText={(e)=>{
-                        setDescription(e)
-                    }}
-                    onFocus={()=>{
-                    }}
-                    onBlur={()=>{
-                    }}
-                     />
-                     <TouchableOpacity
-                     style={{borderWidth:1,borderColor:'black',width:'90%'}}
-                     onPress={
-                         submitHandler
-                     }
-                     >
-                         <Text>
-                             Add Menu Item
-                         </Text>
-                     </TouchableOpacity>
+            <TextInput
+                placeholder='Price'
+                style={styles.textInput1}
+                value={price}
+                onChangeText={(e)=>{
+                    setPrice(e)
+                }}
+                keyboardType='number-pad'
+                onFocus={()=>{
+                }}
+                onBlur={()=>{
+                }}
+            />
+            
+            <DropDownPicker
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+            />
 
-
-</View>
+            <TextInput
+                placeholder='Description(optional)'
+                style={styles.textInput1}
+                value={description}
+                onChangeText={(e)=>{
+                    setDescription(e)
+                }}
+                onFocus={()=>{
+                }}
+                onBlur={()=>{
+                }}
+            />
+                        
+            <TouchableOpacity
+                style={{borderWidth:1,borderColor:'black',width:'90%'}}
+                onPress={
+                    submitHandler
+                }
+            >
+            
+                <Text>
+                    Add Menu Item
+                </Text>
+            </TouchableOpacity>
+        </View>
     );
 }
 
@@ -132,6 +122,7 @@ const styles=StyleSheet.create({
     container:{
         flex:1,
     },
+    
     textInput1:{
         fontFamily:'nunito',
         borderWidth:0,

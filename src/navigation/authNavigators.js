@@ -6,6 +6,7 @@ import OrdersDashboardScreen from '../screens/OrdersDashboardScreen'
 import OrdersFormScreen from '../screens/OrderFormScreen'
 import RootClientTabs from './ClientTabs'
 import WelcomeScreen from '../screens/WelcomeScreen'
+import { colors } from "../global/styles"
 
 const Auth=createStackNavigator()
 
@@ -60,7 +61,11 @@ const AuthStack=()=>{
     name='OrdersDashboardScreen'
     component={OrdersDashboardScreen}
     options={{
+        // headerStyle:{
+        //     backgroundColor:colors.statusBar,
+        // },
         headerShown:false,
+        // headerTitle:"OrdersDashboardScreen",
         ...TransitionPresets.RevealFromBottomAndroid
     }}   
 />
