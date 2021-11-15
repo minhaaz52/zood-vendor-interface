@@ -1,51 +1,87 @@
 import React, {useState, useEffect} from "react";
-import {View,Text,StyleSheet, ScrollView, TextInput, Switch, Dimensions } from 'react-native'
-import { useSelector } from "react-redux";
+import {View,Text,StyleSheet, ScrollView, TextInput, Switch, Dimensions, ActivityIndicator, RefreshControl } from 'react-native'
+import { useSelector, useDispatch } from "react-redux";
 import { colors } from "../global/styles"
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Icon } from "react-native-elements";
+import { dataActions } from "../store/dataSlice";
 
 import All from "./FoodCategories/All"
 import Starter from "./FoodCategories/Starter";
 import Dessert from "./FoodCategories/Dessert";
 import MainCourse from "./FoodCategories/MainCourse";
+import { NavigationContainer } from "@react-navigation/native";
 
 
 const oTab = createMaterialTopTabNavigator();
 
 
-const OrdersDashboardScreen = (props) =>{
+const OrdersDashboardScreen = ({navigation}) =>{
 
-    const id="1000001"
+
+    const dispatch=useDispatch();
+
+    // const id="1000001"
+
+    const id=useSelector(state=>state.data.vendor_id)
 
     const [txt, setTxt]=useState("");
     const [toggle, setToggle]=useState(false);
     const [toggle2, setToggle2]=useState(false);
+    const [loadAll, setLoadAll]=useState(true);
+    const [load, setLoad]=useState(true);
+    const [refresh, setRefresh]=useState(false);
 
-    const menuItems=useSelector(state=>state.data.items)
+    // const menuItems=useSelector(state=>state.data.items)
+
+    const [menuItems, setMenuItems]=useState({"Dessert":[], "Starters":[], "Main Course":[]})
 
     const [dessert, setDessert]=useState(menuItems.Dessert)
-    const [starter, setStarter]=useState(menuItems.Starter)
-    const [mainCourse, setMainCourse]=useState(menuItems.MainCourse)
-    const [all, setAll]=useState({"Starter":starter, "MainCourse":mainCourse, "Dessert":dessert})
+    const [starter, setStarter]=useState(menuItems.Starters)
+    const [mainCourse, setMainCourse]=useState(menuItems["Main Course"])
+    const [all, setAll]=useState({"Starters":starter, "Main Course":mainCourse, "Dessert":dessert})
     
     useEffect(()=>{
-        setDessert(menuItems.Dessert);
-        setStarter(menuItems.Starter)
-        setMainCourse(menuItems.MainCourse);
-        
-        fetch("http://192.168.1.6:8080/db/get-menus").then(data=>data.json()).then(data2=>console.log(data2)).catch(err=>console.log(err))
+        fetchingItem();
+        navigation.addListener("focus",fetchingItem)
     },[])
 
     useEffect(()=>{
+        let mount=true;
+        if (mount){
+            setLoad(false);
+        }
+        return ()=>mount=false;
+    },[all])
+
+    const fetchingItem=()=>{
+        // setLoad(true);
+        fetch("http://192.168.1.6:8080/db/get-menus").then(data=>data.json()).then(data2=>{
+            // console.log(data2)
+            const result=data2.filter((val)=>val.vendor_id===id);
+            setMenuItems(result[0].menu_items.menu)
+        }).catch(err=>console.log(err))
+    }
+
+
+    const onRefresh=()=>{
+        // console.log("");
+        setRefresh(true);
+        setLoad(false);
+        fetchingItem();
+        setTimeout(()=>setRefresh(false),100);
+    }
+
+    useEffect(()=>{
+        dispatch(dataActions.updateData(menuItems))
         setDessert(menuItems.Dessert);
-        setStarter(menuItems.Starter)
-        setMainCourse(menuItems.MainCourse);
-        // setAll(menuItems);
+        setStarter(menuItems.Starters)
+        setMainCourse(menuItems["Main Course"]);
     },[menuItems])
     
     useEffect(()=>{
-        setAll({"Starter":starter, "MainCourse":mainCourse, "Dessert":dessert})
+        setAll({"Starters":starter, "Main Course":mainCourse, "Dessert":dessert})
+        // setLoad(false);
     },[dessert, starter, mainCourse])
 
     useEffect(()=>{
@@ -56,9 +92,9 @@ const OrdersDashboardScreen = (props) =>{
 
         let filterDessert=menuItems.Dessert.filter(x=>x.name.toLowerCase().includes(txt.toLocaleLowerCase()));
         
-        let filterStarter=menuItems.Starter.filter(x=>x.name.toLowerCase().includes(txt.toLocaleLowerCase()));
+        let filterStarter=menuItems.Starters.filter(x=>x.name.toLowerCase().includes(txt.toLocaleLowerCase()));
 
-        let filterMainCourse=menuItems["MainCourse"].filter(x=>x.name.toLowerCase().includes(txt.toLocaleLowerCase()));
+        let filterMainCourse=menuItems["Main Course"].filter(x=>x.name.toLowerCase().includes(txt.toLocaleLowerCase()));
 
         if ((toggle && toggle2) || (!toggle && !toggle2)){
             setDessert(filterDessert)
@@ -88,7 +124,7 @@ const OrdersDashboardScreen = (props) =>{
     return(
         <View style={styles.container}>
             <View  style={[styles.header]}>
-                <ScrollView>
+                <ScrollView refreshControl={<RefreshControl refreshing={refresh} onRefresh={onRefresh}/>}>
                     <View style={styles.txtInput}>
                         <View style={{flexDirection:"row"}}>
                             <Icon type="material-community" name="magnify" size={26} style={{marginRight:10}}/>
@@ -121,19 +157,36 @@ const OrdersDashboardScreen = (props) =>{
                 </ScrollView>
             </View>
 
+            {load===false &&
+
             <oTab.Navigator
-                tabBarOptions={{
-                    activeTintColor:colors.statusBar,
-                    inactiveTintColor:colors.black,
+                // tabBarOptions={{
+                //     activeTintColor:colors.statusBar,
+                //     inactiveTintColor:colors.black,
+                //     fontWeight:"bold",
+                //     style:{
+                //         backgroundColor:colors.cardbackground,
+                //     },
+                //     tabStyle:{
+                //         width:120,
+                //     },
+                //     indicatorStyle:{backgroundColor:colors.statusBar},
+                //     scrollEnabled:true,
+                // }}
+
+                screenOptions={{
+                    tabBarActiveTintColor:colors.statusBar,
+                    tabBarInactiveTintColor:colors.black,
                     fontWeight:"bold",
-                    style:{
+                    tabBarStyle:{
                         backgroundColor:colors.cardbackground,
                     },
-                    tabStyle:{
+
+                    tabBarItemStyle:{
                         width:120,
                     },
-                    indicatorStyle:{backgroundColor:colors.statusBar},
-                    scrollEnabled:true,
+                    tabBarIndicatorStyle:{backgroundColor:colors.statusBar},
+                    tabBarScrollEnabled:true,
                 }}
 
                 initialLayout={{
@@ -145,6 +198,13 @@ const OrdersDashboardScreen = (props) =>{
                 <oTab.Screen name="Main Course" children={()=><MainCourse list={mainCourse} id={id}/>}/>
                 <oTab.Screen name="Dessert" children={()=><Dessert list={dessert} id={id}/>}/>
             </oTab.Navigator>
+            }
+            {
+                load===true &&
+                <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
+                    <ActivityIndicator size="large" color={colors.loading}/>
+                </View>
+            }
         </View>
     );
 }

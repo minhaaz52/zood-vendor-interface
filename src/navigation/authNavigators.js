@@ -7,6 +7,10 @@ import OrdersFormScreen from '../screens/OrderFormScreen'
 import RootClientTabs from './ClientTabs'
 import WelcomeScreen from '../screens/WelcomeScreen'
 import { colors } from "../global/styles"
+import EditAccount from '../screens/EditAccount'
+import EditHomeAddress from '../screens/EditHomeAddress'
+import EditWorkAddress from '../screens/EditWorkAddress'
+import { withTheme } from 'react-native-elements'
 
 const Auth=createStackNavigator()
 
@@ -78,6 +82,45 @@ const AuthStack=()=>{
         ...TransitionPresets.RevealFromBottomAndroid
     }}
     
+/>
+
+<Auth.Screen
+    name="EditAccount"
+    component={EditAccount}
+    options={{
+        headerStyle:{
+            backgroundColor:colors.statusBar,
+        },
+        headerTitle:"Name",
+        headerShown:true,
+        ...TransitionPresets.RevealFromBottomAndroid
+    }}
+/>
+
+<Auth.Screen
+    name="EditHomeAdd"
+    component={EditHomeAddress}
+    options={{
+        headerStyle:{
+            backgroundColor:colors.statusBar,
+            // color:"white",
+        },
+        headerTitle:"Home Address",
+        ...TransitionPresets.RevealFromBottomAndroid
+    }}
+/>
+
+<Auth.Screen
+    name="EditWorkAdd"
+    component={EditWorkAddress}
+    options={{
+        headerStyle:{
+            backgroundColor:colors.statusBar,
+        },
+        // headerTintColor:"white",
+        headerTitle:"Work Address",
+        ...TransitionPresets.RevealFromBottomAndroid
+    }}
 />
 
 {/* <Auth.Screen 

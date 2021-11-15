@@ -5,6 +5,7 @@ import {Icon} from 'react-native-elements'
 import OrderFormScreen from '../screens/OrderFormScreen';
 import OrdersDashboardScreen from '../screens/OrdersDashboardScreen'
 import { colors } from "../global/styles"
+import Profile from '../screens/Profile';
 
 const clientTabs=createBottomTabNavigator();
 
@@ -29,11 +30,13 @@ const RootClientTabs=()=>{
                         size={size}
                     />
                 ),
-                // tabBarActiveTintColor:colors.statusBar,
+                tabBarActiveTintColor:colors.statusBar,
                 headerStyle:{
                     backgroundColor:colors.statusBar,
                 },
-                headerShown:false,
+                headerTitle:"Zood",
+                headerTintColor:"white",
+                // headerShown:false,
             }}
         />
 
@@ -50,9 +53,37 @@ const RootClientTabs=()=>{
                    color={color}
                    size={size}
                />
-           )
+           ),
+            tabBarActiveTintColor:colors.statusBar,
+            headerStyle:{
+                backgroundColor:colors.statusBar,
+            },
+            headerTitle:"Zood",
+            headerTintColor:"white",
          }
          }
+         />
+
+         <clientTabs.Screen
+             name="Profile"
+             component={Profile}
+             options={{
+                 tabBarLabel:"Profile",
+                 tabBarIcon:({color, size})=>(
+                    <Icon
+                     name="person"
+                     color={color}
+                     size={size}
+                    />
+                 ),
+                
+                tabBarActiveTintColor:colors.statusBar,
+                headerStyle:{
+                    backgroundColor:colors.statusBar,
+                },
+                headerTintColor:"white",
+                headerTitle:"Zood",
+             }}
          />
      </clientTabs.Navigator>
     );

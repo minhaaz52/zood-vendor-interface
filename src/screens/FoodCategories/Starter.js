@@ -22,7 +22,7 @@ function Starter(props) {
                                 }
                             }) */}
                             return(
-                                <MenuItem item={val} id={id} quantity={q} key={index} cate="Starter"/>
+                                <MenuItem item={val} id={id} quantity={q} key={index} cate="Starters"/>
                             )
                         })
                     }

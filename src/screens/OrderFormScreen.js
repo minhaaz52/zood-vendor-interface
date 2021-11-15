@@ -1,13 +1,17 @@
-import React,{useState} from "react";
-import { useDispatch } from "react-redux";
-import {View,Text,StyleSheet,TextInput,TouchableOpacity,Alert} from 'react-native'
+import React,{useEffect, useState} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {View,Text,StyleSheet,TextInput,TouchableOpacity,Alert, CheckBox} from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
 import RadioButtonRN from 'radio-buttons-react-native';
 import { dataActions } from "../store/dataSlice";
-const OrderFormScreen = (props) =>{
+import { NavigationContainer } from "@react-navigation/native";
 
-dispatch=useDispatch()
+const OrderFormScreen = ({navigation}) =>{
 
+    const dispatch=useDispatch()
+    const menuItems=useSelector(state=>state.data.items);
+
+    const vendor_id=useSelector(state=>state.data.vendor_id);
 
     const [name,setName]=useState('')
     const [type,setType]=useState('')
@@ -18,24 +22,117 @@ dispatch=useDispatch()
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
+    const [veg, setVeg]=useState(true);
+    const [sInd, setSind]=useState("");
+    const [dInd, setDind]=useState("");
+    const [mInd, setMind]=useState("");
+
+    const [flag, setFlag]=useState(false);
     
     const [items, setItems] = useState([
-      {label: 'Starter', value: 'Starter'},
+      {label: 'Starter', value: 'Starters'},
       {label: 'Dessert', value: 'Dessert'},
-      {label: 'Main Course', value: 'MainCourse'},
+      {label: 'Main Course', value: 'Main Course'},
     ]);
 
+    useEffect(()=>{
+        setIndex();
+    },[menuItems])
+
+    const setIndex=()=>{
+        let desInd=1001
+        let statInd=1001
+        let mainInd=1001
+        
+        while (true){
+            let v=true;
+            menuItems.Dessert.map((val,index)=>{
+                if (Number(val.item_id.slice(3))===desInd){
+                    v=false;
+                    desInd+=1
+                }
+            })
+
+            if (v){
+                let b="APR"+desInd.toString();
+                desInd=b;
+                setDind(b)
+                break;
+            }
+        }
+
+        while (true){
+            let v=true;
+            menuItems.Starters.map((val,index)=>{
+                if (Number(val.item_id.slice(3))===statInd){
+                    v=false;
+                    statInd+=1
+                }
+            })
+
+            if (v){
+                let b="APP"+statInd.toString();
+                statInd=b;
+                setSind(b);
+                break;
+            }
+        }
+
+        while (true){
+            let v=true;
+            menuItems["Main Course"].map((val,index)=>{
+                if (Number(val.item_id.slice(3))===mainInd){
+                    v=false;
+                    mainInd+=1
+                }
+            })
+
+            if (v){
+                let b="APQ"+mainInd.toString();
+                mainInd=b;
+                setMind(b);
+                break;
+            }
+        }
+
+    }
+
+    useEffect(()=>{
+        // console.log(veg);
+    },[veg])
+
+
+    const vegFun=(e)=>{
+        if (e.label==="Veg"){
+            setVeg(true)
+        }
+        else{
+            setVeg(false);
+        }
+    }
 
 
     const submitHandler=()=>{
-        const newItem={ name, type, price, category:value, description, rating:0, numberOfRatings:0, disable:false }
+        let itemId=""
+        if (value==="Starters"){
+            itemId=sInd
+        }
+        else if (value==="Main Course"){
+            itemId=mInd
+        }
+        else if (value==="Dessert"){
+            itemId=dInd
+        }
+
+        const newItem={itemId, name, veg:true, price, category:value, description, rating:0, numberOfRatings:0, available:true, bestSeller:false, tags:["North Indian", "Fast Food"]}
 
         dispatch(dataActions.addData(newItem))
+
         Alert.alert('Item Added Successfully')
         setName('')
         setPrice()
         setValue(null)
-        setType()
+        // setType()
         setDescription('')
     }
  
@@ -60,7 +157,8 @@ dispatch=useDispatch()
                 box={false}
 
                 selectedBtn={(e) => {
-                    setType(e.label)
+                    // setType(e.label)
+                    vegFun(e)
                 }}
             />
 

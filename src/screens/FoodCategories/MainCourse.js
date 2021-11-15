@@ -22,7 +22,7 @@ function MainCourse(props) {
                                 }
                             }) */}
                             return(
-                                <MenuItem item={val} id={id} quantity={q} key={index} cate="MainCourse"/>
+                                <MenuItem item={val} id={id} quantity={q} key={index} cate="Main Course"/>
                             )
                         })
                     }

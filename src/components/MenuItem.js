@@ -13,13 +13,14 @@ import { dataActions } from '../store/dataSlice'
 
 // let item2;
 const MenuItem=({item,id,quantity, cate})=>{
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch()
 
     let item2={...item}
     item2["vendor_id"]=id
     item2["category"]=cate
 
     const deleteItem=()=>{
+        // console.log(item2);
         Alert.alert(
             `Delete Item`,
             `Are you sure, you want to Delete ${item.name}?`,
@@ -37,19 +38,22 @@ const MenuItem=({item,id,quantity, cate})=>{
     }
 
     return(
-        <View style={[styles.container, {backgroundColor:item2.disable?colors.grey5:colors.cardbackground}]}>
-            <View style={{width:"70%", justifyContent:"space-around", height:"100%", opacity:item2.disable?0.5:1, }}>
+        <View style={[styles.container, {backgroundColor:! item2.available?colors.grey5:colors.cardbackground}]}>
+            <View style={{width:"70%", justifyContent:"space-around", height:"100%", opacity:! item2.available?0.5:1, }}>
                 
-                <View style={{borderWidth:1, height:20, width:20, justifyContent:"center", alignItems:"center", borderColor:item.type==="Veg"?colors.green:colors.red}}>
-                    <View style={{height:10, width:10, borderRadius:10, backgroundColor:item.type==="Veg"?colors.green:colors.red}}/>
+                <View style={{borderWidth:1, height:20, width:20, justifyContent:"center", alignItems:"center", borderColor:item.veg?colors.green:colors.red}}>
+                    <View style={{height:10, width:10, borderRadius:10, backgroundColor:item.veg?colors.green:colors.red}}/>
                 </View>
 
                 <Text style={{fontWeight:"bold"}}>{item.name}</Text>
                 <Text numberOfLines={2} style={{color:colors.black2}}>{item.description}</Text>
-                <Text style={{fontWeight:"bold"}}>₹ {item.price}</Text>
-                
+                <View style={{display:"flex", flexDirection:"row"}}>
+                    <Text style={{fontWeight:"bold"}}>₹ {item.price}</Text>
+                    <Text style={{fontWeight:"bold", marginLeft:20, color:"red", display:item.available?"none":"flex"}}>Not Available</Text>
+                </View>
+
                 <View style={{flexDirection:"row"}}>
-                    <Star rating={item.rating} review={item.numberOfRatings}/>
+                    <Star rating={item.rating} review={item.rated_by}/>
                     <View style={{marginLeft:10, borderColor:colors.statusBar, borderWidth:1, paddingHorizontal:5, borderRadius:5, display:item.bestseller?"flex":"none" }}>
                         <Text style={{color:colors.statusBar, fontSize:12, fontWeight:"bold"}}>Bestseller</Text>
                     </View>
@@ -63,7 +67,7 @@ const MenuItem=({item,id,quantity, cate})=>{
                     }}
                 >
                     {/* <Text style={styles.qtyText}>{item2.disable?"Enable":"Disable"}</Text> */}
-                    <Icon name={item2.disable?"visibility":"visibility-off"} color={item2.disable?colors.green:colors.buttons}/>
+                    <Icon name={item2.available?"visibility":"visibility-off"} color={! item2.available?colors.green:colors.buttons}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.qtyButtons, {backgroundColor:colors.grey6}]}

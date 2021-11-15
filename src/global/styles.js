@@ -16,6 +16,7 @@ export const colors={
     red:"red",
     star:"#FF8C00",
     black2:"rgb(89, 89, 89)",
+    loading:"#ff8c52"
 }
 
 

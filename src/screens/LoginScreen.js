@@ -4,13 +4,33 @@ import { View,Text,StyleSheet,Dimensions,TextInput } from 'react-native'
 import * as Animatable from 'react-native-animatable'
 import {colors,parameters,title} from '../global/styles'
 import {Icon,Button,SocialIcon} from 'react-native-elements'
+import { useDispatch } from 'react-redux'
+import { dataActions } from '../store/dataSlice'
 
 const SignInScreen=({navigation})=>{
+
+    const dispatch=useDispatch();
 
     const [textInput2Focussed,setTextInput2Focussed]=useState(false)
     const [textInput1Focussed,setTextInput1Focussed]=useState(false)
     const textInput1=useRef(1)
     const textInput2=useRef(2)
+
+    const [email, setEmail]=useState("");
+
+    const signin=()=>{
+        // console.log(email);
+        fetch("http://192.168.1.6:8080/db/vendor-list").then(data=>data.json()).then(data2=>{
+            // console.log(data2);
+            let result=data2.filter((val)=>val.vendor_id===email);
+            // console.log(result);
+            if (result.length===0){
+                return alert("Invalid Vendor Id");
+            }
+            dispatch(dataActions.updateVendor({"vendorId":result[0].vendor_id, "menuId":result[0].menu_id }))
+            navigation.navigate("RootClientTabs")
+        }).catch((err)=>console.log(err))
+    }
 
     return(
         <View style={styles.container}>
@@ -49,6 +69,7 @@ const SignInScreen=({navigation})=>{
                         onBlur={()=>{
                             setTextInput1Focussed(true)
                         }}
+                    onChangeText={(e)=>setEmail(e)}
                     />
                 </View>
 
@@ -86,7 +107,8 @@ const SignInScreen=({navigation})=>{
                         buttonStyle={parameters.styledButton}
                         titleStyle={parameters.buttonTitle}
                         onPress={()=>{
-                            navigation.navigate('RootClientTabs')
+                            // navigation.navigate('RootClientTabs')
+                            signin();
                         }}
                     />
                 </View>

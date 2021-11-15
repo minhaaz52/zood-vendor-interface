@@ -7,7 +7,7 @@ import { colors } from '../../global/styles';
 function All(props) {
 
     const {list, id}=props
-    const categories=["Starter","MainCourse","Dessert"]
+    const categories=["Starters","Main Course","Dessert"]
     // const itemCnt=useSelector(state=>state.menuCount.itemCnt);
     // useEffect(()=>{
     //     // console.log(list)
@@ -15,7 +15,7 @@ function All(props) {
 
     return (
         <View>
-            {(list.Dessert.length!==0 || list.Starter.length!==0 || list["MainCourse"].length!==0) &&
+            {(list.Dessert.length!==0 || list.Starters.length!==0 || list["Main Course"].length!==0) &&
                 <ScrollView>
                     {
                         categories.map((val,index)=>{
@@ -37,7 +37,7 @@ function All(props) {
                 </ScrollView>
             }
 
-            {list.Dessert.length===0 && list.Starter.length===0 && list["MainCourse"].length===0 &&
+            {list.Dessert.length===0 && list.Starters.length===0 && list["Main Course"].length===0 &&
                 <ScrollView style={{marginTop:10, padding:10}}>
                     <Text style={{fontSize:20, color:colors.black, textAlign:"center"}}>No Results Found</Text>
                 </ScrollView>
