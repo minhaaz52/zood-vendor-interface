@@ -13,6 +13,10 @@ function All(props) {
     //     // console.log(list)
     // },[])
 
+    useEffect(()=>{
+        // console.log("All :",list)
+    },[list])
+
     return (
         <View>
             {(list.Dessert.length!==0 || list.Starters.length!==0 || list["Main Course"].length!==0) &&

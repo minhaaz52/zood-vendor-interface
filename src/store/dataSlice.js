@@ -21,8 +21,8 @@ import {createSlice,current} from '@reduxjs/toolkit'
                                 state.vendor_id=action.payload.vendorId,
                                 state.menu_id=action.payload.menuId
 
-                                console.log(state.vendor_id)
-                                console.log(state.menu_id)
+                                // console.log(state.vendor_id)
+                                // console.log(state.menu_id)
                               },
 
                               updateData(state, action){

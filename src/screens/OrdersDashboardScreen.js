@@ -10,7 +10,6 @@ import All from "./FoodCategories/All"
 import Starter from "./FoodCategories/Starter";
 import Dessert from "./FoodCategories/Dessert";
 import MainCourse from "./FoodCategories/MainCourse";
-import { NavigationContainer } from "@react-navigation/native";
 
 
 const oTab = createMaterialTopTabNavigator();
@@ -25,6 +24,10 @@ const OrdersDashboardScreen = ({navigation}) =>{
 
     const id=useSelector(state=>state.data.vendor_id)
 
+    const menuItems=useSelector(state=>state.data.items);
+
+
+
     const [txt, setTxt]=useState("");
     const [toggle, setToggle]=useState(false);
     const [toggle2, setToggle2]=useState(false);
@@ -34,7 +37,7 @@ const OrdersDashboardScreen = ({navigation}) =>{
 
     // const menuItems=useSelector(state=>state.data.items)
 
-    const [menuItems, setMenuItems]=useState({"Dessert":[], "Starters":[], "Main Course":[]})
+    // const [menuItems, setMenuItems]=useState({"Dessert":[], "Starters":[], "Main Course":[]})
 
     const [dessert, setDessert]=useState(menuItems.Dessert)
     const [starter, setStarter]=useState(menuItems.Starters)
@@ -42,13 +45,20 @@ const OrdersDashboardScreen = ({navigation}) =>{
     const [all, setAll]=useState({"Starters":starter, "Main Course":mainCourse, "Dessert":dessert})
     
     useEffect(()=>{
-        fetchingItem();
-        navigation.addListener("focus",fetchingItem)
+        let mount=true;
+        if (mount){
+            fetchingItem();
+        }
+        return ()=>mount=false;
+        // navigation.addListener("focus", fetchingItem)
     },[])
 
     useEffect(()=>{
         let mount=true;
         if (mount){
+            // setLoad(false);
+            // setTimeout(()=>setLoad(false),1000)
+            // console.log("All : ",all)
             setLoad(false);
         }
         return ()=>mount=false;
@@ -59,13 +69,18 @@ const OrdersDashboardScreen = ({navigation}) =>{
         fetch("http://192.168.1.6:8080/db/get-menus").then(data=>data.json()).then(data2=>{
             // console.log(data2)
             const result=data2.filter((val)=>val.vendor_id===id);
-            setMenuItems(result[0].menu_items.menu)
+            if (result.length===0){
+                return alert("Something Went Wrong");
+            }
+            // setMenuItems(result[0].menu_items.menu)
+            dispatch(dataActions.updateData(result[0].menu_items.menu))
         }).catch(err=>console.log(err))
     }
 
 
     const onRefresh=()=>{
         // console.log("");
+        setLoad(true);
         setRefresh(true);
         setLoad(false);
         fetchingItem();
@@ -73,10 +88,15 @@ const OrdersDashboardScreen = ({navigation}) =>{
     }
 
     useEffect(()=>{
-        dispatch(dataActions.updateData(menuItems))
+        // dispatch(dataActions.updateData(menuItems))
         setDessert(menuItems.Dessert);
         setStarter(menuItems.Starters)
         setMainCourse(menuItems["Main Course"]);
+        
+        // console.log(reduxItems);
+        // setDessert(reduxItems.Dessert)
+        // setStarter(reduxItems.Starters);
+        // setMainCourse(reduxItems["Main Course"])
     },[menuItems])
     
     useEffect(()=>{
@@ -102,17 +122,17 @@ const OrdersDashboardScreen = ({navigation}) =>{
             setMainCourse(filterMainCourse)
         }
         else if (toggle){
-            let fd=filterDessert.filter(x=>x.type==="Veg");
-            let fs=filterStarter.filter(x=>x.type==="Veg");
-            let fm=filterMainCourse.filter(x=>x.type==="Veg");
+            let fd=filterDessert.filter(x=>x.veg===true);
+            let fs=filterStarter.filter(x=>x.veg===true);
+            let fm=filterMainCourse.filter(x=>x.veg===true);
             setDessert(fd)
             setStarter(fs)
             setMainCourse(fm)
         }
         else if (toggle2){
-            let fd=filterDessert.filter(x=>x.type==="Non-Veg");
-            let fs=filterStarter.filter(x=>x.type==="Non-Veg");
-            let fm=filterMainCourse.filter(x=>x.type==="Non-Veg");
+            let fd=filterDessert.filter(x=>x.veg===false);
+            let fs=filterStarter.filter(x=>x.veg===false);
+            let fm=filterMainCourse.filter(x=>x.veg===false);
             setDessert(fd)
             setStarter(fs)
             setMainCourse(fm)
@@ -123,6 +143,14 @@ const OrdersDashboardScreen = ({navigation}) =>{
 
     return(
         <View style={styles.container}>
+        {/* {
+                load===true &&
+                <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
+                    <ActivityIndicator size="large" color={colors.loading}/>
+                </View>
+            }
+            {load===false &&
+        <View style={{flex:1}}> */}
             <View  style={[styles.header]}>
                 <ScrollView refreshControl={<RefreshControl refreshing={refresh} onRefresh={onRefresh}/>}>
                     <View style={styles.txtInput}>
@@ -160,20 +188,6 @@ const OrdersDashboardScreen = ({navigation}) =>{
             {load===false &&
 
             <oTab.Navigator
-                // tabBarOptions={{
-                //     activeTintColor:colors.statusBar,
-                //     inactiveTintColor:colors.black,
-                //     fontWeight:"bold",
-                //     style:{
-                //         backgroundColor:colors.cardbackground,
-                //     },
-                //     tabStyle:{
-                //         width:120,
-                //     },
-                //     indicatorStyle:{backgroundColor:colors.statusBar},
-                //     scrollEnabled:true,
-                // }}
-
                 screenOptions={{
                     tabBarActiveTintColor:colors.statusBar,
                     tabBarInactiveTintColor:colors.black,

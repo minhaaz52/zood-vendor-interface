@@ -5,6 +5,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import RadioButtonRN from 'radio-buttons-react-native';
 import { dataActions } from "../store/dataSlice";
 import { NavigationContainer } from "@react-navigation/native";
+import {colors} from "../global/styles"
 
 const OrderFormScreen = ({navigation}) =>{
 
@@ -21,11 +22,24 @@ const OrderFormScreen = ({navigation}) =>{
     const data = [ { label: 'Veg' }, { label: 'Non-Veg' } ];
 
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState("Starters");
     const [veg, setVeg]=useState(true);
     const [sInd, setSind]=useState("");
     const [dInd, setDind]=useState("");
     const [mInd, setMind]=useState("");
+
+    const [sel1, setSel1]=useState(false);
+    const [sel2, setSel2]=useState(false);
+    const [sel3, setSel3]=useState(false);
+    const [sel4, setSel4]=useState(false);
+    const [sel5, setSel5]=useState(false);
+    const [sel6, setSel6]=useState(false);
+    const [sel7, setSel7]=useState(false);
+    const [sel8, setSel8]=useState(false);
+
+    // const categories={"sel1":"Fast Food", "sel2":"North Indian", "sel3":"South Indian", "sel4":"Chinese", "sel5":"Italian", "sel6":"Dessert", "sel7":"Thali","sel8":"Appetizers"}
+
+    const cateArray=[{"name":sel1, "set":setSel1, "category":"Fast Food"}, {"name":sel2, "set":setSel2, "category":"North Indian"}, {"name":sel3, "set":setSel3, "category":"South Indian"}, {"name":sel4, "set":setSel4, "category":"Chinese"}, {"name":sel5, "set":setSel5, "category":"Italian"}, {"name":sel6, "set":setSel6, "category":"Dessert"}, {"name":sel7, "set":setSel7, "category":"Thali"}, {"name":sel8, "set":setSel8, "category":"Appetizers"}]
 
     const [flag, setFlag]=useState(false);
     
@@ -124,16 +138,29 @@ const OrderFormScreen = ({navigation}) =>{
             itemId=dInd
         }
 
-        const newItem={itemId, name, veg:true, price, category:value, description, rating:0, numberOfRatings:0, available:true, bestSeller:false, tags:["North Indian", "Fast Food"]}
+        let catArr=[]
+        cateArray.map((val,index)=>{
+            if (val.name===true){
+                catArr.push(val.category);
+            }
+        })
+
+        console.log("Cate Arr :",catArr);
+
+        const newItem={itemId, name, veg:true, price, category:value, description, rating:0, numberOfRatings:0, available:true, bestSeller:false, tags:catArr}
 
         dispatch(dataActions.addData(newItem))
 
         Alert.alert('Item Added Successfully')
         setName('')
         setPrice()
-        setValue(null)
+        setValue("Starters")
         // setType()
         setDescription('')
+        setVeg(true);
+        cateArray.map((val,index)=>{
+            val.set(false);
+        })
     }
  
     return(
@@ -197,15 +224,37 @@ const OrderFormScreen = ({navigation}) =>{
                 onBlur={()=>{
                 }}
             />
+
+            <View style={{marginLeft:5, marginVertical:10}}>
+
+                <Text style={{fontWeight:"bold", fontSize:20, marginBottom:10}}>Tags :</Text>
+
+                <View style={{display:"flex", flexDirection:"row", flexWrap:"wrap", alignItems:"center"}}>
+                    
+                    {
+                        cateArray.map((val,index)=>{
+                            return(
+                                <View key={index} style={{flexDirection:"row", alignItems:"center"}}>
+                                    <CheckBox
+                                        value={val.name}
+                                        onValueChange={val.set}
+                                    />
+                                    <Text style={{marginHorizontal:5}}>{val.category}</Text>
+                                </View>
+                            )}
+                        )
+                    }
+                </View>
+            </View>
                         
             <TouchableOpacity
-                style={{borderWidth:1,borderColor:'black',width:'90%'}}
+                // style={{borderWidth:1,borderColor:'black',width:'90%'}}
+                style={{width:"50%",paddingVertical:5, backgroundColor:colors.statusBar, alignSelf:"center", borderRadius:24}}
                 onPress={
                     submitHandler
                 }
             >
-            
-                <Text>
+                <Text style={{fontSize:20, color:"white", textAlign:"center"}}>
                     Add Menu Item
                 </Text>
             </TouchableOpacity>

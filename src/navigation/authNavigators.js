@@ -11,6 +11,7 @@ import EditAccount from '../screens/EditAccount'
 import EditHomeAddress from '../screens/EditHomeAddress'
 import EditWorkAddress from '../screens/EditWorkAddress'
 import { withTheme } from 'react-native-elements'
+import Login2 from '../screens/Login2'
 
 const Auth=createStackNavigator()
 
@@ -23,6 +24,15 @@ const AuthStack=()=>{
         //     }
         // }
         >
+<Auth.Screen 
+    name='Login2'
+    component={Login2}
+    options={{
+        headerShown:false,
+        ...TransitionPresets.RevealFromBottomAndroid
+    }}
+    
+/>
 
 <Auth.Screen 
     name='WelcomeScreen'
